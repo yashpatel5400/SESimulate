@@ -25,19 +25,22 @@ except ImportError:
 class ERNetwork:
     #################################################################
     # Given a nodeCount for the number of agents to be simulated,   #
-    # the probability of attaching to other nodes (defaulted to .5) #
+    # number of coaches maximally present in the simulation, and the#
+    # probability of attaching to other nodes (defaulted to .5)     #
     # initializes ER Network                                        #
     #################################################################
-    def __init__(self, nodeCount, p = 0.5):
-        if not self.ERNetwork_verifyNetwork(nodeCount, p):
+    def __init__(self, nodeCount, maxCoachCount, p = 0.5):
+        if not self.ERNetwork_verifyNetwork(nodeCount, maxCoachCount, p):
             return None
 
         self.nodeCount = nodeCount
+        self.maxCoachCount = maxCoachCount
+
         self.p = p
         self.agentFactory = AgentFactory
 
         self.Agents = {}
-        self.networkBase = NetworkBase("ERNetwork")
+        self.networkBase = NetworkBase("ERNetwork", maxCoachCount)
 
         self.ERNetwork_createAgents()
 
@@ -57,6 +60,10 @@ class ERNetwork:
 
         if nodeCount < 4:
             sys.stderr.write("Node count must be at least 4")
+            return False
+
+        if not isinstance(maxCoachCount, int):
+            sys.stderr.write("Coach count must be of type int")
             return False
 
         if not isinstance(p, float):

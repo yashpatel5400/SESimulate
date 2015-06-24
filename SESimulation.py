@@ -17,6 +17,8 @@ from ERNetwork import ERNetwork
 from SWNetwork import SWNetwork
 from ASFNetwork import ASFNetwork
 
+from SensitivitySimulations import Sensitivity_changeParameterSimulation
+
 import matplotlib.pyplot as plt
 from operator import itemgetter 
 
@@ -32,13 +34,16 @@ class SEModel:
     # in years, and whether or not a movie is desired as output,    #
     # produces an SE simulation object                              #
     #################################################################
-    def __init__(self, networkType='ASF', timeSpan=10, numAgents=10):
-        if not self.SEModel_verifySE(networkType, timeSpan, numAgents):
+    def __init__(self, networkType='ASF', timeSpan=10, \
+            numAgents=10, numCoaches = 10):
+        if not self.SEModel_verifySE(networkType, timeSpan, numAgents,
+                numCoaches):
             return None
 
         self.networkType = networkType
         self.timeSpan = timeSpan
         self.numAgents = numAgents
+        self.numCoaches = numCoaches
         self.SEModel_setNetwork()
         
     #################################################################
@@ -47,21 +52,24 @@ class SEModel:
     #################################################################
     def SEModel_setNetwork(self):
         if self.networkType == 'ER':
-            self.network = ERNetwork(self.numAgents, \
+            self.network = ERNetwork(self.numAgents, self.numCoaches, \
                 10.0/self.numAgents)
             self.network.ERNetwork_createAgents()
         elif self.networkType == 'SW':
-            self.network = SWNetwork(self.numAgents, 10, 0.0)
+            self.network = SWNetwork(self.numAgents, self.numCoaches, \
+                10, 0.0)
             self.network.SWNetwork_createAgents()
         else:
-            self.network = ASFNetwork(self.numAgents, 9, 7)
+            self.network = ASFNetwork(self.numAgents, self.numCoaches,\
+                9, 7)
             self.network.ASFNetwork_createAgents()
 
     #################################################################
     # Given parameters for initializing the simulation, ensures they#
     # are legal                                                     # 
     #################################################################
-    def SEModel_verifySE(self, networkType, timeSpan, numAgents):
+    def SEModel_verifySE(self, networkType, timeSpan, numAgents, \
+            numCoaches):
         if not isinstance(networkType, str):
             sys.stderr.write("Network type must be of type string")
             return False
@@ -77,6 +85,10 @@ class SEModel:
             
         if not isinstance(numAgents, int): 
             sys.stderr.write("Number of agents must be of type int")
+            return False
+
+        if not isinstance(numCoaches, int): 
+            sys.stderr.write("Number of coaches must be of type int")
             return False
 
         return True
@@ -190,6 +202,7 @@ class SEModel:
         self.SEModel_createBarResults(ExBefore, ExAfter, \
             "BarExResults", "Exercise Pts", "Exercise Pts Before/After")
 
+
 #####################################################################
 # Given the paramters of the simulation (upon being prompted on)    #
 # command line, runs simulation, outputting a CSV with each time    #
@@ -202,9 +215,17 @@ if __name__ == "__main__":
     networkType = "ASF"
     timeSpan = 15
     numAgents = 25
+    numCoaches = 25
+
+    displaySensitive = True
     resultsFile = "Results\\results.csv"
 
-    simulationModel = SEModel(networkType, timeSpan, numAgents)
-    
+    simulationModel = SEModel(networkType, timeSpan, numAgents, numCoaches)
     simulationModel.SEModel_runSimulation(resultsFile)
+
+    # Runs alternative simulations for depicting effect of changing
+    # parameters on overall results
+    if displaySensitive:
+        Sensitivity_changeParameterSimulation()
+
     print("Terminating simulation...")

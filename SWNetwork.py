@@ -25,21 +25,25 @@ except ImportError:
 class SWNetwork:
     #################################################################
     # Given a nodeCount for the number of agents to be simulated,   #
-    # the probability of adding a new edge for each edge present to #
+    # number of coaches maximally present in the simulation, the    #
+    # probability of adding a new edge for each edge present to     #
     # other nodes (defaulted to .0), and the number of neighbors to #
     # which each node is to be connected (k) initializes SW Network #
     #################################################################
-    def __init__(self, nodeCount, k=4, p = 0.0):
-        if not self.SWNetwork_verifyNetwork(nodeCount, k, p):
+    def __init__(self, nodeCount, maxCoachCount, k=4, p = 0.0):
+        if not self.SWNetwork_verifyNetwork(nodeCount, maxCoachCount,\
+                k, p):
             return None
 
         self.nodeCount = nodeCount
+        self.maxCoachCount = maxCoachCount
+
         self.k = k
         self.p = p
         self.agentFactory = AgentFactory
 
         self.Agents = {}
-        self.networkBase = NetworkBase("SWNetwork")
+        self.networkBase = NetworkBase("SWNetwork", maxCoachCount)
 
         self.SWNetwork_createAgents()
 
@@ -52,13 +56,17 @@ class SWNetwork:
     # Ensures that the given parameters for defining an SW network  #
     # are appropriate                                               # 
     #################################################################
-    def SWNetwork_verifyNetwork(self, nodeCount, k, p):
+    def SWNetwork_verifyNetwork(self, nodeCount, maxCoachCount, k, p):
         if not isinstance(nodeCount, int):
             sys.stderr.write("Node count must be of type int")
             return False
 
         if nodeCount < 4:
             sys.stderr.write("Node count must be at least 4")
+            return False
+
+        if not isinstance(maxCoachCount, int):
+            sys.stderr.write("Coach count must be of type int")
             return False
 
         if not isinstance(k, int):

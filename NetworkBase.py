@@ -24,21 +24,28 @@ except ImportError:
 class NetworkBase:
     #################################################################
     # Initializes the base of the network with the type it is to be #
-    # i.e. SW, ER, etc...                                           #
+    # i.e. SW, ER, etc... and number of coaches                     #
     #################################################################
-    def __init__(self, networkType):
-        if not self.NetworkBase_verifyBase(networkType):
+    def __init__(self, networkType, maxCoachCount):
+        if not self.NetworkBase_verifyBase(networkType, maxCoachCount):
             return None
         self.networkType = networkType
+        self.maxmaxCoachCount = maxCoachCount
+        self.maxCoachCount = maxCoachCount
+        self.coachCount = 0
 
     #################################################################
-    # Given parameter for initializing the network base, ensures    #
+    # Given parameters for initializing the network base, ensures   #
     # it is legal                                                   #  
     #################################################################
-    def NetworkBase_verifyBase(self, networkType):
+    def NetworkBase_verifyBase(self, networkType, maxCoachCount):
         if not isinstance(networkType, str):
             sys.stderr.write("networkType level must be of type " +
                 "string (word)")
+            return False
+
+        if not isinstance(maxCoachCount, int):
+            sys.stderr.write("maxCoachCount level must be of type int")
             return False
         return True
 

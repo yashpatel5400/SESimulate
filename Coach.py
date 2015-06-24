@@ -35,6 +35,11 @@ except ImportError:
 def Coach_getCoachProbability(agent):
     if agent.hasCoach:
         return 1.0
+
+    # Accounts for the case where all of the coaches have been taken
+    if agent.network.coachCount >= agent.network.maxCoachCount:
+        return 0.0
+
     pBase = .25
     const = .25
     return agent.SE * const + pBase

@@ -25,21 +25,25 @@ except ImportError:
 class ASFNetwork:
     #################################################################
     # Given a nodeCount for the number of agents to be simulated,   #
-    # the number of baseline nodes of the graph (m_0), and number   #
+    # number of coaches maximally present in the simulation, the    #
+    # number of baseline nodes of the graph (m_0), and number       #
     # of edges to be added at each step of the initialization (m)   #
     # produces an ASF network                                       #
     #################################################################
-    def __init__(self, nodeCount, m_0 = 4, m = 3):
-        if not self.ASFNetwork_verifyNetwork(nodeCount, m_0, m):
+    def __init__(self, nodeCount, maxCoachCount, m_0 = 4, m = 3):
+        if not self.ASFNetwork_verifyNetwork(nodeCount, maxCoachCount,\
+                m_0, m):
             return None
 
         self.nodeCount = nodeCount
+        self.maxCoachCount = maxCoachCount
+
         self.m_0 = m_0
         self.m = m
         self.agentFactory = AgentFactory
 
         self.Agents = {}
-        self.networkBase = NetworkBase("ASFNetwork")
+        self.networkBase = NetworkBase("ASFNetwork", maxCoachCount)
         
         self.ASFNetwork_createAgents()
 
@@ -51,13 +55,17 @@ class ASFNetwork:
     # Ensures that the given parameters for defining an SW network  #
     # are appropriate                                               # 
     #################################################################
-    def ASFNetwork_verifyNetwork(self, nodeCount, m_0, m):
+    def ASFNetwork_verifyNetwork(self, nodeCount, maxCoachCount, m_0, m):
         if not isinstance(nodeCount, int):
             sys.stderr.write("Node count must be of type int")
             return False
 
         if nodeCount < 4:
             sys.stderr.write("Node count must be at least 4")
+            return False
+
+        if not isinstance(maxCoachCount, int):
+            sys.stderr.write("Coach count must be of type int")
             return False
 
         if not isinstance(m_0, int):

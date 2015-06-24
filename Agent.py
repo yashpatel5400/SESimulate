@@ -40,9 +40,9 @@ except ImportError:
 #####################################################################
 class AgentFactory(object):
     def AgentFactory_createAgent(network, agentID):
-        oldSE=np.random.normal(.5, .15)
-        SE=np.random.normal(.5, .15)
-        hasCoach=int(random.random() * 2)
+        oldSE = np.random.normal(.5, .15)
+        SE = np.random.normal(.5, .15)
+        hasCoach = int(random.random() * 2)
 
         oldLowLevel = int(10.0 * oldSE)
         lowLevel = int(10.0 * SE)
@@ -91,6 +91,9 @@ class Agent:
 
         self.agentID = agentID
         self.network = network.networkBase
+
+        if self.hasCoach:
+            self.network.coachCount += 1
 
     #################################################################
     # Given the parameters for initializing the agent, determines   #
@@ -244,12 +247,14 @@ class Agent:
     #################################################################
     def Agent_addCoach(self):
         self.hasCoach = True
+        self.network.coachCount += 1
 
     #################################################################
     # Makes the agent release its coach (if already present).       #
     #################################################################
     def Agent_removeCoach(self):
         self.hasCoach = False
+        self.network.coachCount -= 1
 
     #################################################################
     # Determines whether, for a given agent, there is a coach in the#
