@@ -63,15 +63,22 @@ class NetworkBase:
 
     #################################################################
     # Simulates updating all agents in network over a single time   #
-    # step: includes updating coach presence/retention and SE       #
+    # step: includes updating coach presence/retention and SE. Each #
+    # of the impact parameters passed in allow for sensitivity      #
+    # analysis on each of the factors (i.e. coach impact helps look #
+    # at, if the "effectiveness" of the coaches is different, how   #
+    # would the final results vary) with default values given       #
     #################################################################
-    def NetworkBase_updateAgents(self, time): 
+    def NetworkBase_updateAgents(self, time, timeImpact = .005, 
+            coachImpact = .225, pastImpact = .025, 
+            socialImpact = .015): 
         # Since we wished for update to happen synchronously, the
         # first loop determines and stores all the values to which 
         # the SE will change and the second then updates all agents
 
         for agentID in self.Agents:
-            self.Agents[agentID].Agent_timeStep(time)
+            self.Agents[agentID].Agent_timeStep(timeImpact, coachImpact,\
+                pastImpact, socialImpact, time)
         for agentID in self.Agents:
             self.Agents[agentID].SE = self.Agents[agentID].toUpdateSE
 
@@ -198,6 +205,16 @@ class NetworkBase:
     def NetworkBase_getStdPopExercise(self, isOld = False):
         exerPop = self.NetworkBase_getPopExercise()
         return std(exerPop)
+
+    #################################################################
+    # Returns the mean SE level for the population network          #
+    #################################################################
+    def NetworkBase_getMeanPopSE(self):
+        agentsSE = []
+        for agentID in self.Agents:
+            agent = self.NetworkBase_getAgent(agentID)
+            agentsSE.append(agent.SE)
+        return mean(agentsSE)
 
     #################################################################
     # Assigns to each nodes the appropriate visual attributes, with #

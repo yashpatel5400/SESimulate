@@ -42,6 +42,11 @@ class AgentFactory(object):
     def AgentFactory_createAgent(network, agentID):
         oldSE = np.random.normal(.5, .15)
         SE = np.random.normal(.5, .15)
+        if SE > 1.0:
+            SE = 1.0
+        elif SE < 0.0:
+            SE = 0.0
+
         hasCoach = int(random.random() * 2)
 
         oldLowLevel = int(10.0 * oldSE)
@@ -270,39 +275,38 @@ class Agent:
     #################################################################
     # Given an agent and the current time in ticks of the simulation#
     # decays the self-efficacy extent depending on whether or not   #
-    # agent has a wellness coach.                                   #
+    # agent has a wellness coach and the extent specified by impact #
     #################################################################
-    def Agent_timeUpdate(self, time):
-        const = .005
+    def Agent_timeUpdate(self, time, timeImpact):
         if not self.hasCoach: 
-            const *= 2.0
-        self.toUpdateSE = self.toUpdateSE * (1 + time) ** (-const)
+            timeImpact *= 2.0
+        self.toUpdateSE = self.toUpdateSE * (1 + time) ** (-timeImpact)
         return
 
     #################################################################
     # Given a particular agent, updates its SE based resulting from #
-    # the presence (or lack thereof) of a coach                     #
+    # the presence (or lack thereof) of a coach and the extent given#
+    # by the coachImpact                                            #
     #################################################################
-    def Agent_coachUpdate(agent):
-        SE = agent.toUpdateSE
-        gamma = .225
+    def Agent_coachUpdate(self, coachImpact):
+        SE = self.toUpdateSE
 
-        agentHasCoach = agent.hasCoach
+        agentHasCoach = self.hasCoach
         if SE >= .5 and agentHasCoach:
-            newSE = SE + (1 - SE) * gamma 
+            newSE = SE + (1 - SE) * coachImpact 
         elif SE < .5 and agentHasCoach:
-            newSE = SE * (1 + gamma)
+            newSE = SE * (1 + coachImpact)
         else:
             newSE = SE
 
-        agent.toUpdateSE = newSE
+        self.toUpdateSE = newSE
 
     #################################################################
     # Given a particular agent, changes its SE based on whether or  #
     # not his given exercise level was above or below (by >= 1/2 std#
-    # dev) the population avg                                       #
+    # dev) the population avg with an extent specified by impact    #
     #################################################################
-    def Agent_pastUpdate(self):
+    def Agent_pastUpdate(self, pastImpact):
         meanOld = self.network.NetworkBase_getMeanPopExercise(True)
         stdOld = self.network.NetworkBase_getStdPopExercise(True)
 
@@ -311,37 +315,35 @@ class Agent:
         curPt = self.Agent_getOldExercisePts(self.Agent_getHours())
         self.Agent_updateExerciseLevels()
 
-        const = .025
-
         if (curPt - meanOld)/stdOld >= .25:
-            self.toUpdateSE = (1 + const) * self.toUpdateSE
+            self.toUpdateSE = (1 + pastImpact) * self.toUpdateSE
         else: 
-            self.toUpdateSE = (1 - const) * self.toUpdateSE
+            self.toUpdateSE = (1 - pastImpact) * self.toUpdateSE
 
     #################################################################
     # Given a particular agent, changes its SE based on whether or  #
     # not the average exercise level of his connected network was   #
     # above or below (by >= 1/2 std dev) the population avg         #
     #################################################################
-    def Agent_socialUpdate(self):
+    def Agent_socialUpdate(self, socialImpact):
         meanLocal = self.network.NetworkBase_getMeanLocalExercise(self)
         meanPop = self.network.NetworkBase_getMeanPopExercise()
         stdPop = self.network.NetworkBase_getStdPopExercise()
         
-        const = .015
-
         if (meanLocal - meanPop)/stdPop >= .25:
-            self.toUpdateSE = (1 + const) * self.toUpdateSE
+            self.toUpdateSE = (1 + socialImpact) * self.toUpdateSE
         else: 
-            self.toUpdateSE = (1 - const) * self.toUpdateSE
+            self.toUpdateSE = (1 - socialImpact) * self.toUpdateSE
 
     #################################################################
     # From the proposal, "functions will be applied in the          # 
     # following "order: decay, coaching, past-exercise, social      #
     # network." Given an agent and current time (in ticks), new SE  #
-    # is determined.                                                #
+    # is determined. Uses the impact parameters as methods of doing #
+    # sensitivity analysis: default values provided as well         #
     #################################################################
-    def Agent_updateSE(self, time):
+    def Agent_updateSE(self, timeImpact, coachImpact, pastImpact, \
+            socialImpact, time):
         self.oldSE = self.SE
 
         # toUpdateSE will be used for all the calculations and then
@@ -349,18 +351,22 @@ class Agent:
         # used to update SE: simulates "simultaneous change"
         self.toUpdateSE = self.SE
 
-        self.Agent_timeUpdate(time)
-        self.Agent_coachUpdate()
-        self.Agent_pastUpdate()
-        self.Agent_socialUpdate()
+        self.Agent_timeUpdate(time, timeImpact)
+        self.Agent_coachUpdate(coachImpact)
+        self.Agent_pastUpdate(pastImpact)
+        self.Agent_socialUpdate(socialImpact)
 
     #################################################################
     # Simulates change in the agent over a single time step given   #
     # the current time (in ticks) of simulation: includes updating  #
-    # coach presence/retention and SE                               #
+    # coach presence/retention and SE. Each of the impact parameters#
+    # look at the different parts of the model to determine the     #
+    # sensitivity of the final result to its variance               #
     #################################################################
-    def Agent_timeStep(self, time):
+    def Agent_timeStep(self, timeImpact, coachImpact, pastImpact, \
+            socialImpact, time):
         Coach_acquireCoachWithProb(self)
         Coach_keepCoachWithProb(self)
-        self.Agent_updateSE(time)
+        self.Agent_updateSE(timeImpact, coachImpact, pastImpact, \
+            socialImpact, time)
         self.Agent_normalizeSE()

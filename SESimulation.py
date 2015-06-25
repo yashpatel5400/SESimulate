@@ -17,7 +17,7 @@ from ERNetwork import ERNetwork
 from SWNetwork import SWNetwork
 from ASFNetwork import ASFNetwork
 
-from SensitivitySimulations import Sensitivity_changeParameterSimulation
+from SensitivitySimulations import *
 
 import matplotlib.pyplot as plt
 from operator import itemgetter 
@@ -31,19 +31,27 @@ except ImportError:
 class SEModel:
     #################################################################
     # Given a network type (defaults to ASF network), the timespan  #
-    # in years, and whether or not a movie is desired as output,    #
+    # in years, and sensitivity to the different update methods,    #
     # produces an SE simulation object                              #
     #################################################################
-    def __init__(self, networkType='ASF', timeSpan=10, \
+    def __init__(self, timeImpact, coachImpact, 
+            pastImpact, socialImpact, networkType='ASF', timeSpan=10, \
             numAgents=10, numCoaches = 10):
-        if not self.SEModel_verifySE(networkType, timeSpan, numAgents,
-                numCoaches):
+        if not self.SEModel_verifySE(timeImpact, coachImpact, 
+            pastImpact, socialImpact, networkType, timeSpan, \
+            numAgents, numCoaches):
             return None
+
+        self.timeImpact = timeImpact
+        self.coachImpact = coachImpact
+        self.pastImpact = pastImpact
+        self.socialImpact = socialImpact
 
         self.networkType = networkType
         self.timeSpan = timeSpan
         self.numAgents = numAgents
         self.numCoaches = numCoaches
+
         self.SEModel_setNetwork()
         
     #################################################################
@@ -68,8 +76,9 @@ class SEModel:
     # Given parameters for initializing the simulation, ensures they#
     # are legal                                                     # 
     #################################################################
-    def SEModel_verifySE(self, networkType, timeSpan, numAgents, \
-            numCoaches):
+    def SEModel_verifySE(self, timeImpact, coachImpact, 
+            pastImpact, socialImpact, networkType, timeSpan, \
+            numAgents, numCoaches):
         if not isinstance(networkType, str):
             sys.stderr.write("Network type must be of type string")
             return False
@@ -89,6 +98,22 @@ class SEModel:
 
         if not isinstance(numCoaches, int): 
             sys.stderr.write("Number of coaches must be of type int")
+            return False
+
+        if not isinstance(timeImpact, float): 
+            sys.stderr.write("timeImpact must be of type float")
+            return False
+
+        if not isinstance(coachImpact, float): 
+            sys.stderr.write("coachImpact must be of type float")
+            return False
+
+        if not isinstance(pastImpact, float): 
+            sys.stderr.write("pastImpact must be of type float")
+            return False
+
+        if not isinstance(socialImpact, float): 
+            sys.stderr.write("socialImpact must be of type float")
             return False
 
         return True
@@ -134,7 +159,7 @@ class SEModel:
         N = len(val1)
 
         ind = np.arange(N)  # the x locations for the groups
-        width = 0.25       # the width of the bars
+        width = 0.25        # the width of the bars
         fig, ax = plt.subplots()
 
         rects1 = ax.bar(ind, val1, width, color='r')
@@ -153,7 +178,7 @@ class SEModel:
 
         ax.set_xticklabels(labels)
         ax.legend( (rects1[0], rects2[0]), ('Before', 'After') )
-        plt.savefig("Results\\" + fileName + ".png")
+        plt.savefig("Results\\TimeResults\\" + fileName + ".png")
 
     #################################################################
     # Runs simulation over the desired timespan and produces/outputs#
@@ -202,6 +227,14 @@ class SEModel:
         self.SEModel_createBarResults(ExBefore, ExAfter, \
             "BarExResults", "Exercise Pts", "Exercise Pts Before/After")
 
+    def SEModel_runStreamlineSimulation(self):
+        numTicks = self.timeSpan * 26
+
+        for i in range(0, numTicks):
+            # Updates the agents in the network base and copies those
+            # to the network
+            self.network.networkBase.NetworkBase_updateAgents(i)
+            self.network.Agents = self.network.networkBase.Agents
 
 #####################################################################
 # Given the paramters of the simulation (upon being prompted on)    #
@@ -212,20 +245,33 @@ if __name__ == "__main__":
     # Get all input for initializing simulation
 
     # ER, SW, or ASF
-    networkType = "ASF"
-    timeSpan = 15
+    networkType = "ER"
+    timeSpan = 5
     numAgents = 25
     numCoaches = 25
 
-    displaySensitive = True
-    resultsFile = "Results\\results.csv"
+    # Defaults for the impact values are as follow: 
+    # timeImpact = .005, coachImpact = .225, pastImpact = .025
+    # socialImpact = .015. Feel free to change as desired below
+    # for sensitivity analysis (automated by displaySensitive below)
+    
+    timeImpact = .005 
+    coachImpact = .225
+    pastImpact = .025
+    socialImpact = .015
 
-    simulationModel = SEModel(networkType, timeSpan, numAgents, numCoaches)
+    displaySensitive = True
+
+    resultsFile = "Results\\TimeResults\\results.csv"
+    simulationModel = SEModel(timeImpact, coachImpact, pastImpact, \
+       socialImpact, networkType, timeSpan, numAgents, numCoaches)
     simulationModel.SEModel_runSimulation(resultsFile)
 
     # Runs alternative simulations for depicting effect of changing
     # parameters on overall results
     if displaySensitive:
-        Sensitivity_changeParameterSimulation()
+        Sensitivity_sensitivitySimulation(networkType, timeSpan, \
+            numAgents, numCoaches, timeImpact, coachImpact, \
+            pastImpact, socialImpact)
 
     print("Terminating simulation...")

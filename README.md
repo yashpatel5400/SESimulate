@@ -1,6 +1,6 @@
 # SESimulate
-=====================================================================
-SE simulate seeks to simulate the self-efficacy of given networks of 
+
+SE Simulate seeks to simulate the self-efficacy of given networks of 
 populations, given initial parameters of the coaching effectiveness,
 number, and social network clustering. Of interest were the time
 effects of SE development both in individuals and the entire network
@@ -17,6 +17,12 @@ result of changing the following parameters;
 	- Coach count
 	- Time decay constants
 	- Different network clustering algorithsm
+
+# Results
+
+The results of SE Simulate are outputted in the Results folder 
+(originally blank) and are further sorted by the time results (graphical 
+displays for steps of time) and sensitivity (for sensitivity analysis).
 
 Note: The package uses Python 3, with the Numpy, NetworkX, and
 Matplotlib libraries.

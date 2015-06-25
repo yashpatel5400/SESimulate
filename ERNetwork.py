@@ -53,7 +53,7 @@ class ERNetwork:
     # Ensures that the given parameters for defining an ER network  #
     # are appropriate                                               # 
     #################################################################
-    def ERNetwork_verifyNetwork(self, nodeCount, p):
+    def ERNetwork_verifyNetwork(self, maxCoachCount, nodeCount, p):
         if not isinstance(nodeCount, int):
             sys.stderr.write("Node count must be of type int")
             return False
