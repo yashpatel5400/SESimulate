@@ -36,7 +36,7 @@ except ImportError:
 def Coach_getCoachProbability(agent):
     pBase = .25
     const = .25
-    return agent.SE * const + pBase
+    return (1 - agent.SE) * const + pBase
 
 #####################################################################
 # Given a particular agent, determines their probability of         #

@@ -211,6 +211,7 @@ def Sensitivity_networkGraphs(xArray, yArray, xLabel, yLabel):
     ax.set_xticklabels(xArray)
     plt.savefig("Results\\Sensitivity\\Networks\\{}vs{}.png"\
     	.format(xLabel, yLabel))
+    plt.close()
 
 #####################################################################
 # Produces graphical display for the sensitivity results of all     #
@@ -231,6 +232,7 @@ def Sensitivity_plotGraphs(xArray, yArray, xLabel, yLabel):
 
     plt.savefig("Results\\Sensitivity\\{}\\{}vs{}.png"\
     	.format(xLabel, xLabel, yLabel))
+    plt.close()
 
 #####################################################################
 # Conducts sensitivity tests for each of the paramaters of interest #
@@ -244,18 +246,18 @@ def Sensitivity_sensitivitySimulation(networkType, timeSpan,     \
     finalResults.append(Sensitivity_timeDecay(networkType, timeSpan,\
         numAgents, numCoaches, coachImpact, pastImpact, socialImpact))
 
+    finalResults.append(Sensitivity_socialNetwork(networkType, timeSpan, \
+        numAgents, numCoaches, timeImpact, coachImpact, pastImpact))
+
     finalResults.append(Sensitivity_coachEffectiveness(networkType, \
         timeSpan, numAgents, numCoaches, timeImpact, pastImpact, \
         socialImpact))
 
-    finalResults.append(Sensitivity_pastBehavior(networkType, timeSpan, \
-        numAgents, numCoaches, timeImpact, coachImpact, socialImpact))
-
-    finalResults.append(Sensitivity_socialNetwork(networkType, timeSpan, \
-        numAgents, numCoaches, timeImpact, coachImpact, pastImpact))
-
     finalResults.append(Sensitivity_maxCoachCount(networkType, timeSpan, \
         numAgents, timeImpact, coachImpact, pastImpact, socialImpact))
+
+    finalResults.append(Sensitivity_pastBehavior(networkType, timeSpan, \
+       numAgents, numCoaches, timeImpact, coachImpact, socialImpact))
 
     networkResults = Sensitivity_networkCluster(timeSpan, numAgents, \
         numCoaches, timeImpact, coachImpact, pastImpact, socialImpact)

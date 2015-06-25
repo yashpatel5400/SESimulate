@@ -1,5 +1,4 @@
 clean: 
-	rm Results/*.png 
 	rm Results/TimeResults/*.csv
 	rm Results/TimeResults/*.png 
 	rm Results/Sensitivity/Time_Impact/*.png

@@ -249,7 +249,8 @@ class NetworkBase:
                 node_size=500, alpha=self.G.node[node]['opacity'])
         nx.draw_networkx_edges(self.G,pos,width=1.0,alpha=.5)
 
-        plt.savefig("Results\\timestep" + \
-            str(time) + ".png")
+        plt.title("SE Network at Time {}".format(time))
+        plt.savefig("Results\\TimeResults\\timestep{}.png".format(time))
         if toShow: 
             plt.show()
+        plt.close()

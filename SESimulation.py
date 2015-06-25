@@ -179,6 +179,7 @@ class SEModel:
         ax.set_xticklabels(labels)
         ax.legend( (rects1[0], rects2[0]), ('Before', 'After') )
         plt.savefig("Results\\TimeResults\\" + fileName + ".png")
+        plt.close()
 
     #################################################################
     # Runs simulation over the desired timespan and produces/outputs#
@@ -256,8 +257,8 @@ if __name__ == "__main__":
     # ER, SW, or ASF
     networkType = "ER"
     timeSpan = 10
-    numAgents = 50
-    numCoaches = 25
+    numAgents = 25
+    numCoaches = 10
 
     # Defaults for the impact values are as follow: 
     # timeImpact = .005, coachImpact = .225, pastImpact = .025
@@ -271,6 +272,11 @@ if __name__ == "__main__":
 
     displaySensitive = True
 
+    resultsFile = "Results\\TimeResults\\results.csv"
+    simulationModel = SEModel(timeImpact, coachImpact, pastImpact, \
+       socialImpact, networkType, timeSpan, numAgents, numCoaches)
+    simulationModel.SEModel_runSimulation(resultsFile)
+
     # Runs alternative simulations for depicting effect of changing
     # parameters on overall results -- Done before actual simulation
     # due to bug in graphical display
@@ -278,10 +284,5 @@ if __name__ == "__main__":
         Sensitivity_sensitivitySimulation(networkType, timeSpan, \
             numAgents, numCoaches, timeImpact, coachImpact, \
             pastImpact, socialImpact)
-
-    resultsFile = "Results\\TimeResults\\results.csv"
-    simulationModel = SEModel(timeImpact, coachImpact, pastImpact, \
-       socialImpact, networkType, timeSpan, numAgents, numCoaches)
-    simulationModel.SEModel_runSimulation(resultsFile)
 
     print("Terminating simulation...")
