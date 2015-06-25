@@ -5,6 +5,7 @@
 # network (small world)                                             #
 #####################################################################
 
+import sys
 import os
 import random,itertools
 from copy import deepcopy

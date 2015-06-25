@@ -3,7 +3,8 @@
 # File: ERNetwork.py                                                #
 # Description: Contains all the methods pertinent to modelling ER   #
 # network (randomized construction)                                 #
-#####################################################################
+
+import sys#####################################################################
 
 import os
 import random,itertools
@@ -53,7 +54,7 @@ class ERNetwork:
     # Ensures that the given parameters for defining an ER network  #
     # are appropriate                                               # 
     #################################################################
-    def ERNetwork_verifyNetwork(self, maxCoachCount, nodeCount, p):
+    def ERNetwork_verifyNetwork(self, nodeCount, maxCoachCount, p):
         if not isinstance(nodeCount, int):
             sys.stderr.write("Node count must be of type int")
             return False

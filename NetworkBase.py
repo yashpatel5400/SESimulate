@@ -30,7 +30,6 @@ class NetworkBase:
         if not self.NetworkBase_verifyBase(networkType, maxCoachCount):
             return None
         self.networkType = networkType
-        self.maxmaxCoachCount = maxCoachCount
         self.maxCoachCount = maxCoachCount
         self.coachCount = 0
 

@@ -13,6 +13,8 @@ Really really ugly code: definitely try tidying up if possible
 # variables, particularly focusing on the impacts of the updates    #
 #####################################################################
 
+
+import sys
 import os
 import csv
 import random,itertools
@@ -83,7 +85,7 @@ def Sensitivity_splitResults(indVarScales, mixedArr, label):
 def Sensitivity_timeDecay(networkType, timeSpan, numAgents, numCoaches,\
          coachImpact, pastImpact, socialImpact):
     print("Performing sensitivity on time decay impact")
-    timeImpactTrials = [.001, .0025, .005, .0075, .01]
+    timeImpactTrials = [0.00, .001, .0025, .005, .0075, .01, .0125]
     trials = []
 
     for timeImpact in timeImpactTrials:
@@ -101,7 +103,8 @@ def Sensitivity_timeDecay(networkType, timeSpan, numAgents, numCoaches,\
 def Sensitivity_coachEffectiveness(networkType, timeSpan, numAgents, \
         numCoaches, timeImpact, pastImpact, socialImpact):
     print("Performing sensitivity on coach effectiveness")
-    coachImpactTrials = [.175, .20, .225, .25, .275]
+    coachImpactTrials = [.100, .125, .15, .175, .20, .225, .25, .275,\
+        .30, .325]
     trials = []
 
     for coachImpact in coachImpactTrials:
@@ -119,7 +122,8 @@ def Sensitivity_coachEffectiveness(networkType, timeSpan, numAgents, \
 def Sensitivity_pastBehavior(networkType, timeSpan, numAgents, \
         numCoaches, timeImpact, coachImpact, socialImpact):
     print("Performing sensitivity on past impact")
-    pastImpactTrials = [.015, .020, .025, .030, .035]
+    pastImpactTrials = [0.0, .01, .015, .020, .025, .030, .035, .04, \
+        .045, .050]
     trials = []
 
     for pastImpact in pastImpactTrials:
@@ -137,7 +141,8 @@ def Sensitivity_pastBehavior(networkType, timeSpan, numAgents, \
 def Sensitivity_socialNetwork(networkType, timeSpan, numAgents, \
         numCoaches, timeImpact, coachImpact, pastImpact):
     print("Performing sensitivity on social impact")
-    socialImpactTrials = [.005, .010, .015, .020, .025]
+    socialImpactTrials = [0.00, .001, .005, .010, .015, .020, .025, \
+        .030, .035]
     trials = []
 
     for socialImpact in socialImpactTrials:
@@ -155,7 +160,7 @@ def Sensitivity_socialNetwork(networkType, timeSpan, numAgents, \
 def Sensitivity_maxCoachCount(networkType, timeSpan, numAgents, \
         timeImpact, coachImpact, pastImpact, socialImpact):
     print("Performing sensitivity on number of coaches")
-    numCoachesTrials = [15, 20, 25, 30, 35]
+    numCoachesTrials = [10, 15, 20, 25, 30, 35, 40, 45, 50]
     trials = []
 
     for numCoaches in numCoachesTrials:

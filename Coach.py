@@ -13,6 +13,7 @@ TO CHANGE
 # self-efficacy levels and exercise in the network of agents        #
 #####################################################################
 
+import sys
 import os
 import random
 from numpy import array, zeros, std, mean, sqrt
@@ -33,13 +34,6 @@ except ImportError:
 # getting a coach (based on connected agents in network and SE)     #
 #####################################################################
 def Coach_getCoachProbability(agent):
-    if agent.hasCoach:
-        return 1.0
-
-    # Accounts for the case where all of the coaches have been taken
-    if agent.network.coachCount >= agent.network.maxCoachCount:
-        return 0.0
-
     pBase = .25
     const = .25
     return agent.SE * const + pBase
@@ -50,8 +44,6 @@ def Coach_getCoachProbability(agent):
 # an agent and current SE)                                          #
 #####################################################################
 def Coach_keepCoachProbability(agent):
-    if not agent.hasCoach:
-        return 0.0
     pBase = .75
     delta = agent.Agent_getSEChange()
     return agent.SE * delta + pBase
@@ -61,6 +53,15 @@ def Coach_keepCoachProbability(agent):
 # determined by SE and network                                      #
 #####################################################################
 def Coach_acquireCoachWithProb(agent):
+    # print("Current: {}".format(agent.network.coachCount))
+    # print("Max: {}".format(agent.network.maxCoachCount))
+
+    # Accounts for the case where all of the coaches have been taken
+    if agent.network.coachCount >= agent.network.maxCoachCount:
+        return
+
+    if agent.hasCoach:
+        return
     prob = Coach_getCoachProbability(agent)
     rand = random.random()
     if rand < prob:
@@ -71,6 +72,8 @@ def Coach_acquireCoachWithProb(agent):
 # determined by SE and changes caused by coach                      #
 #####################################################################
 def Coach_keepCoachWithProb(agent):
+    if not agent.hasCoach:
+        return
     prob = Coach_keepCoachProbability(agent)
     rand = random.random()
     if rand > prob:

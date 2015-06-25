@@ -48,6 +48,9 @@ class AgentFactory(object):
             SE = 0.0
 
         hasCoach = int(random.random() * 2)
+        if network.networkBase.coachCount >= \
+            network.networkBase.maxCoachCount:
+            hasCoach = 0
 
         oldLowLevel = int(10.0 * oldSE)
         lowLevel = int(10.0 * SE)
@@ -293,7 +296,7 @@ class Agent:
 
         agentHasCoach = self.hasCoach
         if SE >= .5 and agentHasCoach:
-            newSE = SE + (1 - SE) * coachImpact 
+            newSE = SE + (1 - SE) * coachImpact
         elif SE < .5 and agentHasCoach:
             newSE = SE * (1 + coachImpact)
         else:
@@ -315,7 +318,7 @@ class Agent:
         curPt = self.Agent_getOldExercisePts(self.Agent_getHours())
         self.Agent_updateExerciseLevels()
 
-        if (curPt - meanOld)/stdOld >= .25:
+        if (curPt - meanOld)/stdOld >= .30:
             self.toUpdateSE = (1 + pastImpact) * self.toUpdateSE
         else: 
             self.toUpdateSE = (1 - pastImpact) * self.toUpdateSE
@@ -330,7 +333,7 @@ class Agent:
         meanPop = self.network.NetworkBase_getMeanPopExercise()
         stdPop = self.network.NetworkBase_getStdPopExercise()
         
-        if (meanLocal - meanPop)/stdPop >= .25:
+        if (meanLocal - meanPop)/stdPop >= .30:
             self.toUpdateSE = (1 + socialImpact) * self.toUpdateSE
         else: 
             self.toUpdateSE = (1 - socialImpact) * self.toUpdateSE

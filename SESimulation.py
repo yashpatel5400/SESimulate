@@ -6,6 +6,7 @@
 # levels in the form of an ABM (agent-based model)                  #
 #####################################################################
 
+import sys
 import os
 import csv
 import random,itertools
@@ -62,15 +63,12 @@ class SEModel:
         if self.networkType == 'ER':
             self.network = ERNetwork(self.numAgents, self.numCoaches, \
                 10.0/self.numAgents)
-            self.network.ERNetwork_createAgents()
         elif self.networkType == 'SW':
             self.network = SWNetwork(self.numAgents, self.numCoaches, \
                 10, 0.0)
-            self.network.SWNetwork_createAgents()
         else:
             self.network = ASFNetwork(self.numAgents, self.numCoaches,\
                 9, 7)
-            self.network.ASFNetwork_createAgents()
 
     #################################################################
     # Given parameters for initializing the simulation, ensures they#
@@ -201,16 +199,17 @@ class SEModel:
                 (agent.Agent_getHours))
 
         for i in range(0, numTicks):
+            if i % 20 == 0:
+                print("Plotting time step " + str(i))
+                self.network.networkBase.\
+                    NetworkBase_visualizeNetwork(False, i, pos)
+
             # Updates the agents in the network base and copies those
             # to the network
             self.network.networkBase.NetworkBase_updateAgents(i)
             self.network.Agents = self.network.networkBase.Agents
 
-            self.SEModel_writeSimulationData(i, resultsFile)
-            if i % 20 == 0:
-                print("Plotting time step " + str(i))
-                self.network.networkBase.\
-                    NetworkBase_visualizeNetwork(False, i, pos)
+            self.SEModel_writeSimulationData(i, resultsFile)    
 
         SEAfter = []
         ExAfter = []
@@ -247,20 +246,20 @@ if __name__ == "__main__":
     # ER, SW, or ASF
     networkType = "ER"
     timeSpan = 5
-    numAgents = 25
-    numCoaches = 25
+    numAgents = 15
+    numCoaches = 5
 
     # Defaults for the impact values are as follow: 
     # timeImpact = .005, coachImpact = .225, pastImpact = .025
     # socialImpact = .015. Feel free to change as desired below
     # for sensitivity analysis (automated by displaySensitive below)
     
-    timeImpact = .005 
-    coachImpact = .225
-    pastImpact = .025
-    socialImpact = .015
+    timeImpact = 0.0 
+    coachImpact = 0.0
+    pastImpact = 0.0
+    socialImpact = 0.0
 
-    displaySensitive = True
+    displaySensitive = False
 
     # Runs alternative simulations for depicting effect of changing
     # parameters on overall results -- Done before actual simulation
