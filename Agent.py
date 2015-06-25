@@ -254,14 +254,14 @@ class Agent:
     # Makes the agent acquire a coach (if not already present).     #
     #################################################################
     def Agent_addCoach(self):
-        self.hasCoach = True
+        self.hasCoach = 1
         self.network.coachCount += 1
 
     #################################################################
     # Makes the agent release its coach (if already present).       #
     #################################################################
     def Agent_removeCoach(self):
-        self.hasCoach = False
+        self.hasCoach = 0
         self.network.coachCount -= 1
 
     #################################################################
@@ -283,6 +283,7 @@ class Agent:
     def Agent_timeUpdate(self, time, timeImpact):
         if not self.hasCoach: 
             timeImpact *= 2.0
+
         self.toUpdateSE = self.toUpdateSE * (1 + time) ** (-timeImpact)
         return
 

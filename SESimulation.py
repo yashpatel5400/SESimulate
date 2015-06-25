@@ -33,11 +33,13 @@ class SEModel:
     #################################################################
     # Given a network type (defaults to ASF network), the timespan  #
     # in years, and sensitivity to the different update methods,    #
-    # produces an SE simulation object                              #
+    # produces an SE simulation object. The default values for the  #
+    # impact parameters are as follow: timeImpact = .005,           #
+    # coachImpact = .225, pastImpact = .025, socialImpact = .015    #
     #################################################################
-    def __init__(self, timeImpact, coachImpact, 
-            pastImpact, socialImpact, networkType='ASF', timeSpan=10, \
-            numAgents=10, numCoaches = 10):
+    def __init__(self, timeImpact=.005, coachImpact=.225, 
+            pastImpact=.025, socialImpact=.015, networkType='ASF', \
+            timeSpan=10, numAgents=10, numCoaches = 10):
         if not self.SEModel_verifySE(timeImpact, coachImpact, 
             pastImpact, socialImpact, networkType, timeSpan, \
             numAgents, numCoaches):
@@ -62,7 +64,7 @@ class SEModel:
     def SEModel_setNetwork(self):
         if self.networkType == 'ER':
             self.network = ERNetwork(self.numAgents, self.numCoaches, \
-                10.0/self.numAgents)
+                10.0/self.numAgents, )
         elif self.networkType == 'SW':
             self.network = SWNetwork(self.numAgents, self.numCoaches, \
                 10, 0.0)
@@ -199,14 +201,16 @@ class SEModel:
                 (agent.Agent_getHours))
 
         for i in range(0, numTicks):
-            if i % 20 == 0:
+            if i % 10 == 0:
                 print("Plotting time step " + str(i))
                 self.network.networkBase.\
                     NetworkBase_visualizeNetwork(False, i, pos)
 
             # Updates the agents in the network base and copies those
             # to the network
-            self.network.networkBase.NetworkBase_updateAgents(i)
+            self.network.networkBase.NetworkBase_updateAgents(i, \
+                self.timeImpact, self.coachImpact, self.pastImpact, \
+                self.socialImpact)
             self.network.Agents = self.network.networkBase.Agents
 
             self.SEModel_writeSimulationData(i, resultsFile)    
@@ -226,13 +230,19 @@ class SEModel:
         self.SEModel_createBarResults(ExBefore, ExAfter, \
             "BarExResults", "Exercise Pts", "Exercise Pts Before/After")
 
+    #################################################################
+    # Runs simulation over the desired timespan without producing   #
+    # visible output: used for sensitivity analysis                 #
+    #################################################################
     def SEModel_runStreamlineSimulation(self):
         numTicks = self.timeSpan * 26
 
         for i in range(0, numTicks):
             # Updates the agents in the network base and copies those
             # to the network
-            self.network.networkBase.NetworkBase_updateAgents(i)
+            self.network.networkBase.NetworkBase_updateAgents(i, \
+                self.timeImpact, self.coachImpact, self.pastImpact, \
+                self.socialImpact)
             self.network.Agents = self.network.networkBase.Agents
 
 #####################################################################
@@ -245,21 +255,21 @@ if __name__ == "__main__":
 
     # ER, SW, or ASF
     networkType = "ER"
-    timeSpan = 5
-    numAgents = 15
-    numCoaches = 5
+    timeSpan = 10
+    numAgents = 50
+    numCoaches = 25
 
     # Defaults for the impact values are as follow: 
     # timeImpact = .005, coachImpact = .225, pastImpact = .025
     # socialImpact = .015. Feel free to change as desired below
     # for sensitivity analysis (automated by displaySensitive below)
     
-    timeImpact = 0.0 
-    coachImpact = 0.0
-    pastImpact = 0.0
-    socialImpact = 0.0
+    timeImpact = 0.005 
+    coachImpact = 0.225
+    pastImpact = 0.025
+    socialImpact = 0.015
 
-    displaySensitive = False
+    displaySensitive = True
 
     # Runs alternative simulations for depicting effect of changing
     # parameters on overall results -- Done before actual simulation
