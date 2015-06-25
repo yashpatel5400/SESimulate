@@ -198,10 +198,10 @@ def Sensitivity_networkGraphs(xArray, yArray, xLabel, yLabel):
     rects1 = ax.bar(ind, yArray, width, color='b')
 
     # add some text for labels, title and axes ticks
-    ax.set_xlabel(xLabel)
-    ax.set_ylabel(yLabel)
+    ax.set_xlabel(yLabel)
+    ax.set_ylabel(xLabel)
     ax.set_title("{} vs. {}".format(xLabel, yLabel))
-    ax.set_xticks(ind)
+    ax.set_xticks(ind + width/2)
 
     ax.set_xticklabels(xArray)
     plt.savefig("Results\\Sensitivity\\Networks\\{}vs{}.png"\
@@ -231,7 +231,7 @@ def Sensitivity_plotGraphs(xArray, yArray, xLabel, yLabel):
 # Conducts sensitivity tests for each of the paramaters of interest #
 # and produces graphical displays for each (appropriately named)    #
 #####################################################################
-def Sensitivity_sensitivitySimulation(networkType, timeSpan, \
+def Sensitivity_sensitivitySimulation(networkType, timeSpan,     \
         numAgents, numCoaches, timeImpact, coachImpact,          \
         pastImpact, socialImpact):
     finalResults = []
@@ -255,13 +255,13 @@ def Sensitivity_sensitivitySimulation(networkType, timeSpan, \
     networkResults = Sensitivity_networkCluster(timeSpan, numAgents, \
         numCoaches, timeImpact, coachImpact, pastImpact, socialImpact)
 
-    Sensitivity_networkGraphs(networkResults[0], networkResults[1], \
-        "Exercise", networkResults[3])
-    Sensitivity_networkGraphs(networkResults[0], networkResults[2], \
-        "SE", networkResults[3])
-
     for subResult in finalResults:
         Sensitivity_plotGraphs(subResult[0], subResult[1], 
             subResult[3], "Exercise")
         Sensitivity_plotGraphs(subResult[0], subResult[2], \
             subResult[3], "SE")
+
+    Sensitivity_networkGraphs(networkResults[0], networkResults[1], \
+        "Exercise", networkResults[3])
+    Sensitivity_networkGraphs(networkResults[0], networkResults[2], \
+        "SE", networkResults[3])

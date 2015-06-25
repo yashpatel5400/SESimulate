@@ -262,16 +262,17 @@ if __name__ == "__main__":
 
     displaySensitive = True
 
-    resultsFile = "Results\\TimeResults\\results.csv"
-    simulationModel = SEModel(timeImpact, coachImpact, pastImpact, \
-       socialImpact, networkType, timeSpan, numAgents, numCoaches)
-    simulationModel.SEModel_runSimulation(resultsFile)
-
     # Runs alternative simulations for depicting effect of changing
-    # parameters on overall results
+    # parameters on overall results -- Done before actual simulation
+    # due to bug in graphical display
     if displaySensitive:
         Sensitivity_sensitivitySimulation(networkType, timeSpan, \
             numAgents, numCoaches, timeImpact, coachImpact, \
             pastImpact, socialImpact)
+
+    resultsFile = "Results\\TimeResults\\results.csv"
+    simulationModel = SEModel(timeImpact, coachImpact, pastImpact, \
+       socialImpact, networkType, timeSpan, numAgents, numCoaches)
+    simulationModel.SEModel_runSimulation(resultsFile)
 
     print("Terminating simulation...")
