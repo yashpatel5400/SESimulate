@@ -130,8 +130,7 @@ class NetworkBase:
         exerNeighbors = []
         for neighbor in neighbors:
             curNeighbor = self.Agents[neighbor]
-            exerNeighbors.append(curNeighbor.\
-                Agent_getExercisePts(curNeighbor))
+            exerNeighbors.append(curNeighbor.Agent_getExercisePts())
         return exerNeighbors
 
     #################################################################
@@ -143,13 +142,11 @@ class NetworkBase:
         if not isOld:
             for agent in self.Agents:
                 curAgent = self.Agents[agent]
-                exerPop.append(curAgent.Agent_getExercisePts\
-                    (curAgent.Agent_getHours()))
+                exerPop.append(curAgent.Agent_getExercisePts())
         else:
             for agent in self.Agents:
                 curAgent = self.Agents[agent]
-                exerPop.append(curAgent.Agent_getOldExercisePts\
-                    (curAgent.Agent_getHours()))
+                exerPop.append(curAgent.Agent_getOldExercisePts())
         return exerPop
 
     #################################################################
@@ -225,6 +222,11 @@ class NetworkBase:
         # finds respective agent
         for agentID in self.G.nodes():
             curAgent = self.Agents[agentID]
+
+            exPts = curAgent.Agent_getExercisePts()
+            nodeSize = int(500 * exPts/30) 
+            self.G.node[agentID]['size'] = nodeSize
+
             if not curAgent.hasCoach:
                 self.G.node[agentID]['color'] = 'red'
             else:
@@ -246,7 +248,8 @@ class NetworkBase:
         for node in self.G.nodes():
             nx.draw_networkx_nodes(self.G,pos, nodelist=[node], 
                 node_color=self.G.node[node]['color'],
-                node_size=500, alpha=self.G.node[node]['opacity'])
+                node_size=self.G.node[node]['size'], 
+                alpha=self.G.node[node]['opacity'])
         nx.draw_networkx_edges(self.G,pos,width=1.0,alpha=.5)
 
         plt.title("SE Network at Time {}".format(time))

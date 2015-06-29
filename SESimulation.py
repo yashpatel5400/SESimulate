@@ -146,7 +146,7 @@ class SEModel:
                     row = [time, curAgent.agentID,                  \
                     	curAgent.hasCoach, exLevels[0],             \
                     	exLevels[1], exLevels[2],                   \
-                        curAgent.Agent_getExercisePts(time), curAgent.SE]
+                        curAgent.Agent_getExercisePts(), curAgent.SE]
                     writer.writerow(row)
 
     #################################################################
@@ -198,8 +198,7 @@ class SEModel:
             agent = self.network.networkBase.\
                 NetworkBase_getAgent(curAgent)
             SEBefore.append(agent.SE)
-            ExBefore.append(agent.Agent_getExercisePts\
-                (agent.Agent_getHours))
+            ExBefore.append(agent.Agent_getExercisePts())
 
         for i in range(0, numTicks):
             if i % 10 == 0:
@@ -222,8 +221,7 @@ class SEModel:
             agent = self.network.networkBase.\
                 NetworkBase_getAgent(curAgent)
             SEAfter.append(agent.SE)
-            ExAfter.append(agent.Agent_getExercisePts\
-                (agent.Agent_getHours))
+            ExAfter.append(agent.Agent_getExercisePts())
 
         # Creates bar graphs of change in SE, exercise for individuals
         self.SEModel_createBarResults(SEBefore, SEAfter, \

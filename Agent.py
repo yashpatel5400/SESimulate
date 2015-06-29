@@ -207,24 +207,21 @@ class Agent:
     # time tick) to be exercised based on the SE level of agent     #
     #################################################################
     def Agent_getHours(self):
-        # 36 hours was assumed to correspond to an SE of 1.0 (as
-        # such corresponds to 3 hrs/day, unlikely for seniors)
-        MAX_HOURS = 36
-        return self.SE * MAX_HOURS
-
+        return self.lowLevel + self.medLevel + self.highLevel
+        
     #################################################################
     # Determines the number of exercise points for a given agent,   #
     # based on the determined formula of 2 pt/hrs for low exercise, #
     # 3 pts/hr for medium, and 5 pts/hr for high.                   #
     #################################################################
-    def Agent_getExercisePts(self, hrs):
+    def Agent_getExercisePts(self):
         return 2 * self.lowLevel \
             + 3 * self.medLevel + 5 * self.highLevel
 
     #################################################################
     # Similarly determines exercise pts for previous week (old)     #
     #################################################################
-    def Agent_getOldExercisePts(self, hrs):
+    def Agent_getOldExercisePts(self):
         return 2 * self.oldLowLevel \
             + 3 * self.oldMedLevel + 5 * self.oldHighLevel
 
@@ -306,6 +303,19 @@ class Agent:
         self.toUpdateSE = newSE
 
     #################################################################
+    # Given a particular z-score, determines whether or not above   #
+    # threshold value and updates the SE based on the constant given#
+    # Used as a helper function for past and social updates         #
+    #################################################################
+    def Agent_zScoreUpdate(self, zScore, const):
+        if zScore > .25:
+            self.toUpdateSE = (1 + const) * self.toUpdateSE
+        elif zScore < .25 and zScore > -.25:
+            self.toUpdateSE = self.toUpdateSE
+        else: 
+            self.toUpdateSE = (1 - const) * self.toUpdateSE
+
+    #################################################################
     # Given a particular agent, changes its SE based on whether or  #
     # not his given exercise level was above or below (by >= 1/2 std#
     # dev) the population avg with an extent specified by impact    #
@@ -316,13 +326,11 @@ class Agent:
 
         # Determines the number of hours expected to have exercised
         # in the two-week span and finds corresponding pts for #hrs
-        curPt = self.Agent_getOldExercisePts(self.Agent_getHours())
+        curPt = self.Agent_getOldExercisePts()
         self.Agent_updateExerciseLevels()
 
-        if (curPt - meanOld)/stdOld >= .30:
-            self.toUpdateSE = (1 + pastImpact) * self.toUpdateSE
-        else: 
-            self.toUpdateSE = (1 - pastImpact) * self.toUpdateSE
+        zScore = (curPt - meanOld)/stdOld
+        self.Agent_zScoreUpdate(zScore, pastImpact)
 
     #################################################################
     # Given a particular agent, changes its SE based on whether or  #
@@ -334,10 +342,8 @@ class Agent:
         meanPop = self.network.NetworkBase_getMeanPopExercise()
         stdPop = self.network.NetworkBase_getStdPopExercise()
         
-        if (meanLocal - meanPop)/stdPop >= .30:
-            self.toUpdateSE = (1 + socialImpact) * self.toUpdateSE
-        else: 
-            self.toUpdateSE = (1 - socialImpact) * self.toUpdateSE
+        zScore = (meanLocal - meanPop)/stdPop
+        self.Agent_zScoreUpdate(zScore, socialImpact)
 
     #################################################################
     # From the proposal, "functions will be applied in the          # 
