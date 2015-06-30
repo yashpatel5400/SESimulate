@@ -84,7 +84,7 @@ class NetworkBase:
     #################################################################
     # Given a list of nodes, adds edges between all of them         #
     #################################################################
-    def addEdges(self, nodeList):
+    def NetworkBase_addEdges(self, nodeList):
         self.G.add_edges_from(nodeList)
 
     #################################################################

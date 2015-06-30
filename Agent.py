@@ -187,7 +187,7 @@ class Agent:
 
         node_list = [self.agentID]*len(target_nodes)
         edges_to_add = zip(node_list, target_nodes)
-        network.networkBase.addEdges(edges_to_add)
+        network.networkBase.NetworkBase_addEdges(edges_to_add)
 
     #################################################################
     # Normalizes the SE level onto a 1.0 scale                      #
