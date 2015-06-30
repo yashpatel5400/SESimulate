@@ -202,6 +202,8 @@ class SEModel:
 
         for i in range(0, numTicks):
             if i % 10 == 0:
+                self.SEModel_writeSimulationData(i, resultsFile)    
+                
                 print("Plotting time step " + str(i))
                 self.network.networkBase.\
                     NetworkBase_visualizeNetwork(False, i, pos)
@@ -212,8 +214,6 @@ class SEModel:
                 self.timeImpact, self.coachImpact, self.pastImpact, \
                 self.socialImpact)
             self.network.Agents = self.network.networkBase.Agents
-
-            self.SEModel_writeSimulationData(i, resultsFile)    
 
         SEAfter = []
         ExAfter = []
