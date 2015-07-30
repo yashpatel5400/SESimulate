@@ -83,7 +83,25 @@ def getEccentricity(G):
 # nodes                                                             #
 #####################################################################
 def getGeodesic(G):
-	geoDist = nx.average_shortest_path_length(G1)
+	if nx.is_connected(G):
+		geoDist = nx.average_shortest_path_length(G1)
+	else: 
+		# Used to remove instances where you consider the "path" from
+		# a node to itself
+		SELF_PATH = 1
+
+		# Accounts for the double counting when compiling shortest
+		# distances list
+		DOUBLE_COUNT = 2
+
+		h = list(map(lambda path: paths[path], paths))
+		points = [len(path[point]) for path in h for point in path]
+		while SELF_PATH in points: 
+			points.remove(SELF_PATH)
+
+		# Calculates shortest path by sum(points)/(n * (n - 1))
+		# n being the number of nodes in the graph
+		geoDist = sum(points)/(len(points) * (len(points) - 1))/DOUBLE_COUNT
 	return geoDist
 
 if __name__ == u"__main__":
@@ -99,6 +117,7 @@ if __name__ == u"__main__":
 	for month in range(months):
 		if month != SKIPPED_MONTH - ADJUST:
 			for typeStr in [u"Close", u"Talk"]:
+				print "Analyzing {} for month {}".format(typeStr, month + ADJUST)
 				degreeDist = u"{}Month_{}.clu".format(typeStr, month + ADJUST)
 				network = u"{}Results_Month{}.net".format(typeStr, month + ADJUST)
 
