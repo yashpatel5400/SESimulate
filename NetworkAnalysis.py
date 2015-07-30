@@ -35,7 +35,6 @@ def getDegreeDistribution(filename):
 	plt.xlabel(u"rank")
 
 	plt.savefig(u"{}Degree.png".format(filename[0:-4]))
-	plt.show()
 
 #####################################################################
 # Given the filename (MUST be .net format), determines the density  #
@@ -88,18 +87,28 @@ def getGeodesic(G):
 	return geoDist
 
 if __name__ == u"__main__":
+	# Adjusts for the counting of months naturally starting from 1 
+	# as opposed to 0
 	ADJUST = 1
+
+	# Accounts for month 3 (skipped in data collection process)
+	SKIPPED_MONTH = 3 
+
 	months = int(raw_input(u"Please number of months: "))
+	f = open("networkAnalysis.txt", u'w')
 	for month in range(months):
-		for typeStr in [u"Close", u"Talk"]:
-			degreeDist = u"{}Month_{}.clu".format(typeStr, month + ADJUST)
-			network = u"{}Results_Month{}.net".format(typeStr, month + ADJUST)
+		if month != SKIPPED_MONTH - ADJUST:
+			for typeStr in [u"Close", u"Talk"]:
+				degreeDist = u"{}Month_{}.clu".format(typeStr, month + ADJUST)
+				network = u"{}Results_Month{}.net".format(typeStr, month + ADJUST)
 
-			G = nx.read_pajek(network)
-			G1 = nx.Graph(G)
+				G = nx.read_pajek(network)
+				G1 = nx.Graph(G)
 
-			getDegreeDistribution(degreeDist)
-			print u"Degree density: {}".format(getDensity(network))
-			print u"Eccentricity: {}".format(getEccentricity(G1))
-			print u"Geodesic Distance: {}".format(getGeodesic(G1))
-			print u"Reachability: {}".format(getReachability(G1))
+				getDegreeDistribution(degreeDist)
+				f.write(u"{}: Month {}\n".format(typeStr, month))
+				f.write(u"------------------------------------------------\n")
+				f.write(u"Degree density: {}\n".format(getDensity(network)))
+				f.write(u"Eccentricity: {}\n".format(getEccentricity(G1)))
+				f.write(u"Geodesic Distance: {}\n".format(getGeodesic(G1)))
+				f.write(u"Reachability: {}\n\n".format(getReachability(G1)))

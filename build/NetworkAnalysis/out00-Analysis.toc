@@ -4,7 +4,7 @@
   'C:\\Python27\\lib\\site-packages\\PyInstaller\\loader\\pyi_carchive.py',
   'C:\\Python27\\lib\\site-packages\\PyInstaller\\loader\\pyi_os_path.py',
   'NetworkAnalysis.py'],
- ['c:\\Users\\Yash\\Documents\\College - Freshman\\Summer\\Model Code\\SESimulate'],
+ ['c:\\Users\\Yash\\Documents\\College - Freshman\\Summer\\Model Code'],
  None,
  None,
  [('_pyi_bootstrap', 'C:\\Python27\\lib\\site-packages\\PyInstaller\\loader\\_pyi_bootstrap.py', 'PYSOURCE'), ('pyi_importers', 'C:\\Python27\\lib\\site-packages\\PyInstaller\\loader\\pyi_importers.py', 'PYSOURCE'), ('pyi_archive', 'C:\\Python27\\lib\\site-packages\\PyInstaller\\loader\\pyi_archive.py', 'PYSOURCE'), ('pyi_carchive', 'C:\\Python27\\lib\\site-packages\\PyInstaller\\loader\\pyi_carchive.py', 'PYSOURCE'), ('pyi_os_path', 'C:\\Python27\\lib\\site-packages\\PyInstaller\\loader\\pyi_os_path.py', 'PYSOURCE'), ('pyi_rth_PIL_Image', 'C:\\Python27\\lib\\site-packages\\PyInstaller\\loader\\rthooks\\pyi_rth_PIL_Image.py', 'PYSOURCE'), ('pyi_rth_Tkinter', 'C:\\Python27\\lib\\site-packages\\PyInstaller\\loader\\rthooks\\pyi_rth_Tkinter.py', 'PYSOURCE'), ('pyi_rth_mplconfig', 'C:\\Python27\\lib\\site-packages\\PyInstaller\\loader\\rthooks\\pyi_rth_mplconfig.py', 'PYSOURCE'), ('pyi_rth_mpldata', 'C:\\Python27\\lib\\site-packages\\PyInstaller\\loader\\rthooks\\pyi_rth_mpldata.py', 'PYSOURCE'), ('pyi_rth_pkgres', 'C:\\Python27\\lib\\site-packages\\PyInstaller\\loader\\rthooks\\pyi_rth_pkgres.py', 'PYSOURCE'), ('pyi_rth_win32comgenpy', 'C:\\Python27\\lib\\site-packages\\PyInstaller\\loader\\rthooks\\pyi_rth_win32comgenpy.py', 'PYSOURCE'), ('NetworkAnalysis', 'NetworkAnalysis.py', 'PYSOURCE')],
