@@ -253,8 +253,8 @@ if __name__ == "__main__":
     # Get all input for initializing simulation
 
     # ER, SW, or ASF
-    networkType = "ER"
-    timeSpan = 10
+    networkType = "SW"
+    timeSpan = 15
     numAgents = 25
     numCoaches = 10
 
